@@ -535,9 +535,9 @@ Rules:
         return jsonify({"error": "ANTHROPIC_API_KEY not set on server"}), 500
 
     try:
-        client = anthropic.Anthropic(api_key=api_key)
+        client = anthropic.Anthropic(api_key=api_key, timeout=60.0)
         message = client.messages.create(
-            model="claude-opus-4-5",
+            model="claude-haiku-4-5-20251001",
             max_tokens=1500,
             messages=[{"role":"user","content": prompt}]
         )
