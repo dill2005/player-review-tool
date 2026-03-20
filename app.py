@@ -16,27 +16,25 @@ app = Flask(**name**)
 
 # ── Falmouth Colours ──────────────────────────────────────────────────────────
 
-GOLD        = colors.HexColor(”#F5A800”)
-GOLD_DARK   = colors.HexColor(”#C88A00”)
-GOLD_LIGHT  = colors.HexColor(”#FFC93C”)
-GOLD_BG     = colors.HexColor(”#FFFBF0”)
-BLACK       = colors.HexColor(”#1A1A1A”)
-OFF_WHITE   = colors.HexColor(”#F9F7F2”)
-RULE_GREY   = colors.HexColor(”#E0D8C8”)
-MID_GREY    = colors.HexColor(”#666666”)
-DARK_GREY   = colors.HexColor(”#222222”)
+GOLD        = colors.HexColor(0xF5A800)
+GOLD_DARK   = colors.HexColor(0xC88A00)
+GOLD_LIGHT  = colors.HexColor(0xFFC93C)
+GOLD_BG     = colors.HexColor(0xFFFBF0)
+BLACK       = colors.HexColor(0x1A1A1A)
+OFF_WHITE   = colors.HexColor(0xF9F7F2)
+RULE_GREY   = colors.HexColor(0xE0D8C8)
+MID_GREY    = colors.HexColor(0x666666)
+DARK_GREY   = colors.HexColor(0x222222)
 WHITE       = colors.white
+TECH_COL    = colors.HexColor(0x1e7a35)
+TECH_BG     = colors.HexColor(0xf0f9f3)
+PHYS_COL    = colors.HexColor(0x9a6a00)
+PHYS_BG     = colors.HexColor(0xfdf8ec)
+PSYCH_COL   = colors.HexColor(0x2255cc)
+PSYCH_BG    = colors.HexColor(0xf0f4ff)
+SOC_COL     = colors.HexColor(0xb52200)
+SOC_BG      = colors.HexColor(0xfff4f1)
 
-# Corner accent colours (keeping distinct per corner)
-
-TECH_COL    = colors.HexColor(”#1e7a35”)
-TECH_BG     = colors.HexColor(”#f0f9f3”)
-PHYS_COL    = colors.HexColor(”#9a6a00”)
-PHYS_BG     = colors.HexColor(”#fdf8ec”)
-PSYCH_COL   = colors.HexColor(”#2255cc”)
-PSYCH_BG    = colors.HexColor(”#f0f4ff”)
-SOC_COL     = colors.HexColor(”#b52200”)
-SOC_BG      = colors.HexColor(”#fff4f1”)
 
 GRADE_LABELS = {1:“Needs Support”,2:“Developing”,3:“Good”,4:“Very Good”,5:“Excellent”}
 
