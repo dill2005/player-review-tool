@@ -129,7 +129,7 @@ textarea{resize:vertical;line-height:1.6}
     <div class="card-head">Player Details</div>
     <div class="card-body">
       <div class="grid2">
-        <div><label>Player Name</label><input id="name" placeholder="e.g. Decland Rice"></div>
+        <div><label>Player Name</label><input id="name" placeholder="e.g. Declan Rice"></div>
         <div><label>Position</label><input id="position" placeholder="e.g. Midfield"></div>
         <div><label>Coach</label><input id="coach" placeholder="e.g. Arteta"></div>
         <div><label>Team</label><input id="team" placeholder="e.g. U12 Ravens"></div>
