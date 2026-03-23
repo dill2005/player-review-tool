@@ -139,10 +139,10 @@ textarea{resize:vertical;line-height:1.6}
     <div class="card-head">Player Details</div>
     <div class="card-body">
       <div class="grid2">
-        <div><label>Player Name</label><input id="name" placeholder="e.g. Rowan"></div>
-        <div><label>Position</label><input id="position" placeholder="e.g. Midfield"></div>
-        <div><label>Coach</label><input id="coach" placeholder="e.g. Darren"></div>
-        <div><label>Team</label><input id="team" placeholder="e.g. U12 Ravens"></div>
+        <div><label>Player Name</label><input id="name" placeholder="e.g. Declan Rice"></div>
+        <div><label>Position</label><input id="position" placeholder="e.g. Midfielder"></div>
+        <div><label>Coach</label><input id="coach" placeholder="e.g. Arteta"></div>
+        <div><label>Team</label><input id="team" placeholder="e.g. U12 Falcons"></div>
       </div>
       <div class="grid2" style="margin-top:12px">
         <div>
@@ -182,14 +182,14 @@ textarea{resize:vertical;line-height:1.6}
     </div>
   </div>
 
-  <button class="btn btn-gold" id="generateBtn" onclick="generateReport()">Write Report with AI</button>
+  <button class="btn btn-gold" id="generateBtn" onclick="generateReport()">Generate Report</button>
   <div class="status" id="status"></div>
 </div>
 
 <!-- EDIT SCREEN -->
 <div id="editScreen">
   <div class="edit-banner">
-    Review and edit the AI-generated text below. Change anything you like before downloading the PDF.
+    Review and edit the text below. Change anything you like before downloading the PDF.
   </div>
 
   <div class="edit-section">
@@ -287,7 +287,7 @@ async function generateReport(){
   if(!name){alert("Please enter the player's name.");return;}
   const btn=document.getElementById("generateBtn");
   btn.disabled=true;btn.textContent="Writing report...";
-  showStatus("status","Claude is writing the report - usually takes 15-20 seconds...","loading");
+  showStatus("status","Generating report - please wait...","loading");
 
   const GRADES={1:"Needs Support",2:"Developing",3:"Good",4:"Very Good",5:"Excellent"};
   let ratingsText="";
@@ -330,7 +330,7 @@ async function generateReport(){
     window.scrollTo(0,0);
 
   }catch(e){showStatus("status","Error: "+e.message,"error");}
-  finally{btn.disabled=false;btn.textContent="Write Report with AI";}
+  finally{btn.disabled=false;btn.textContent="Generate Report";}
 }
 
 async function downloadPDF(){
