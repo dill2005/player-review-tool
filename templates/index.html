@@ -107,9 +107,9 @@ textarea{resize:vertical;line-height:1.6}
   </div>
   <div class="legend" id="legend-foundation" style="display:none">
     <strong>Grade:</strong>
-    <span><span class="dot" style="background:#1565C0"></span>Developing</span>
-    <span><span class="dot" style="background:#F9A825"></span>Secure</span>
-    <span><span class="dot" style="background:#2E7D32"></span>Excelling</span>
+    <span><span class="dot" style="background:#1565C0"></span><strong>1-2</strong> Developing</span>
+    <span><span class="dot" style="background:#F9A825"></span><strong>3-4</strong> Secure</span>
+    <span><span class="dot" style="background:#2E7D32"></span><strong>5</strong> Excelling</span>
   </div>
 
   <div id="corners"></div>
@@ -242,21 +242,8 @@ function buildCorners() {
       lbl.textContent = item;
       row.appendChild(lbl);
 
-      if (foundation) {
-        var btns = document.createElement("div");
-        btns.className = "foundation-btns";
-        var defs = [["D","Developing","dev"],["S","Secure","sec"],["E","Excelling","exc"]];
-        defs.forEach(function(def) {
-          var btn = document.createElement("button");
-          btn.className = "fbtn " + def[2];
-          btn.textContent = def[1];
-          btn.id = "fb_" + c.key + "_" + i + "_" + def[0];
-          btn.onclick = (function(key, idx, val) {
-            return function() { rateF(key, idx, val); };
-          })(c.key, i, def[0]);
-          btns.appendChild(btn);
-        });
-        row.appendChild(btns);
+      if (false) {
+        // foundation buttons disabled - now using 1-5 for all age groups
       } else {
         var stars = document.createElement("div");
         stars.className = "stars";
