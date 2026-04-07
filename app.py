@@ -465,7 +465,7 @@ function goBack(){
   window.scrollTo(0,0);
 }
 
-document.addEventListener("DOMContentLoaded", function(){ buildCorners(); });
+window.onload = function(){ onAgeChange(); };
 </script>
 </body>
 </html>"""
