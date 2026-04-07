@@ -136,9 +136,9 @@ def build_pdf(data, output_path):
     if foundation:
         gk = Table([[
             Paragraph("GRADE KEY:", styles["gk"]),
-            Paragraph("1-2  Developing", sty("gd", fontName="Helvetica-Bold", fontSize=8, textColor=DEV_COL, leading=11)),
-            Paragraph("3-4  Secure", sty("gs", fontName="Helvetica-Bold", fontSize=8, textColor=SEC_COL, leading=11)),
-            Paragraph("5  Excelling", sty("ge", fontName="Helvetica-Bold", fontSize=8, textColor=EXC_COL, leading=11)),
+            Paragraph("Developing", sty("gd", fontName="Helvetica-Bold", fontSize=8, textColor=DEV_COL, leading=11)),
+            Paragraph("Secure", sty("gs", fontName="Helvetica-Bold", fontSize=8, textColor=SEC_COL, leading=11)),
+            Paragraph("Excelling", sty("ge", fontName="Helvetica-Bold", fontSize=8, textColor=EXC_COL, leading=11)),
         ]], colWidths=[30*mm, 52*mm, 48*mm, 56*mm])
     else:
         gk = Table([[
