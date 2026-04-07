@@ -136,10 +136,10 @@ def build_pdf(data, output_path):
     if foundation:
         gk = Table([[
             Paragraph("GRADE KEY:", styles["gk"]),
-            Paragraph("Developing", sty("gd", fontName="Helvetica-Bold", fontSize=8, textColor=DEV_COL, leading=11)),
-            Paragraph("Secure", sty("gs", fontName="Helvetica-Bold", fontSize=8, textColor=SEC_COL, leading=11)),
-            Paragraph("Excelling", sty("ge", fontName="Helvetica-Bold", fontSize=8, textColor=EXC_COL, leading=11)),
-        ]], colWidths=[30*mm, 50*mm, 50*mm, 56*mm])
+            Paragraph("1-2  Developing", sty("gd", fontName="Helvetica-Bold", fontSize=8, textColor=DEV_COL, leading=11)),
+            Paragraph("3-4  Secure", sty("gs", fontName="Helvetica-Bold", fontSize=8, textColor=SEC_COL, leading=11)),
+            Paragraph("5  Excelling", sty("ge", fontName="Helvetica-Bold", fontSize=8, textColor=EXC_COL, leading=11)),
+        ]], colWidths=[30*mm, 52*mm, 48*mm, 56*mm])
     else:
         gk = Table([[
             Paragraph("GRADE KEY:", styles["gk"]),
@@ -184,18 +184,8 @@ def build_pdf(data, output_path):
         rows = []
         col_hex = "#%02x%02x%02x" % (int(col.red*255), int(col.green*255), int(col.blue*255))
         for item, score in items_scores:
+            score_int = score if isinstance(score,int) else 0
             if foundation:
-                if score == "D":
-                    badge = Paragraph("<b>Developing</b>", sty("fd", fontName="Helvetica-Bold", fontSize=9, textColor=DEV_COL, leading=13))
-                elif score == "S":
-                    badge = Paragraph("<b>Secure</b>", sty("fs", fontName="Helvetica-Bold", fontSize=9, textColor=SEC_COL, leading=13))
-                elif score == "E":
-                    badge = Paragraph("<b>Excelling</b>", sty("fe", fontName="Helvetica-Bold", fontSize=9, textColor=EXC_COL, leading=13))
-                else:
-                    badge = Paragraph("-", styles["ri"])
-                rows.append([Paragraph("- %s" % item, styles["ri"]), badge])
-            else:
-                score_int = score if isinstance(score,int) else 0
                 if score_int <= 2:
                     descriptor = "Developing"
                     dcol = DEV_COL
@@ -205,14 +195,22 @@ def build_pdf(data, output_path):
                 else:
                     descriptor = "Excelling"
                     dcol = EXC_COL
-                badge = Paragraph("<b>%s</b>" % descriptor,
-                    sty("sc", fontName="Helvetica-Bold", fontSize=9, textColor=dcol, leading=13, alignment=TA_RIGHT))
                 rows.append([
                     Paragraph("- %s" % item, styles["ri"]),
-                    badge,
+                    Paragraph("<b>%s</b>" % descriptor, sty("fd", fontName="Helvetica-Bold", fontSize=9, textColor=dcol, leading=13, alignment=TA_RIGHT)),
+                ])
+            else:
+                label = GRADE_LABELS.get(score_int,"")
+                dots_on  = '<font color="%s">%s</font>' % (col_hex, "●" * score_int)
+                dots_off = '<font color="#cccccc">%s</font>' % ("●" * (5-score_int))
+                rows.append([
+                    Paragraph("- %s" % item, styles["ri"]),
+                    Paragraph(dots_on + dots_off, sty("d", fontName="Helvetica", fontSize=10, leading=13)),
+                    Paragraph("<b>%d</b> <font color='#888'>%s</font>" % (score_int, label),
+                        sty("sc", fontName="Helvetica", fontSize=8.5, leading=13, alignment=TA_RIGHT)),
                 ])
 
-        col_widths = [120*mm, 60*mm] if foundation else [130*mm, 50*mm]
+        col_widths = [130*mm, 50*mm] if foundation else [90*mm, 40*mm, 30*mm]
         rt = Table(rows, colWidths=col_widths)
         rt.setStyle(TableStyle([
             ("BACKGROUND",(0,0),(-1,-1),bg),
@@ -300,23 +298,29 @@ def get_ai_text(body):
     }
 
     if foundation:
-        rating_system = "Ratings use: Developing / Secure / Excelling. Reference these descriptors in your text rather than numbers."
+        rating_system = (
+            "Ratings use 1-5 where: "
+            "1-2 = Developing, 3-4 = Secure, 5 = Excelling. "
+            "IMPORTANT: Never mention numbers in your text. Use only the words Developing, Secure or Excelling. "
+            "But use the precise number to calibrate your language - "
+            "a 1 needs very gentle encouragement to keep trying and enjoying the game, "
+            "a 2 deserves warm recognition that good progress is being made, "
+            "a 3 gets solid praise for having this well established, "
+            "a 4 gets strong praise and excitement about their development, "
+            "a 5 gets celebrated as a real standout strength. "
+            "Keep language very simple and age-appropriate."
+        )
     else:
         rating_system = (
             "Ratings use 1-5 where: "
-            "1 = Developing (just starting to build this skill), "
-            "2 = Developing (making good progress but still building), "
-            "3 = Secure (solidly established, consistently doing this well), "
-            "4 = Secure (strongly established, close to excelling), "
-            "5 = Excelling (outstanding, a real strength). "
-            "IMPORTANT: Never mention numbers in your written text. "
-            "Use the descriptors Developing, Secure or Excelling instead. "
-            "But use the precise number to calibrate your language - "
-            "a 1 needs gentle encouragement to keep building, "
-            "a 2 deserves recognition of good progress being made, "
-            "a 3 gets solid praise for being well established, "
+            "1 = Needs Support, 2 = Developing, 3 = Good, 4 = Very Good, 5 = Excellent. "
+            "Use the precise number to calibrate your language - "
+            "a 1 needs encouragement to keep building, "
+            "a 2 deserves recognition of good progress, "
+            "a 3 gets solid praise, "
             "a 4 gets strong praise and a nudge towards the next level, "
-            "a 5 gets celebrated as a real standout strength."
+            "a 5 gets celebrated as a standout strength. "
+            "You may reference the grade labels naturally in your text."
         )
 
     parts = [
@@ -387,16 +391,12 @@ def generate_pdf():
                 m = pattern.search(ratings_text)
                 if m:
                     val = m.group(1).strip()
-                    if foundation:
-                        code_map = {"Developing":"D","Secure":"S","Excelling":"E"}
-                        scores.append((item, code_map.get(val, "D")))
-                    else:
-                        try:
-                            scores.append((item, int(val[0])))
-                        except:
-                            scores.append((item, 3))
+                    try:
+                        scores.append((item, int(val[0])))
+                    except:
+                        scores.append((item, 3))
                 else:
-                    scores.append((item, "D" if foundation else 3))
+                    scores.append((item, 3))
             return scores
 
         data = {
