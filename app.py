@@ -1,7 +1,7 @@
 import os
 import json
 import anthropic
-from flask import Flask, request, jsonify, send_file, render_template_string
+from flask import Flask, request, jsonify, send_file, Response
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import mm
@@ -756,7 +756,7 @@ Use %s's first name throughout. Match language and complexity carefully to the a
 
 @app.route("/")
 def index():
-    return render_template_string(HTML)
+    return Response(HTML, mimetype="text/html")
 
 
 @app.route("/generate_text", methods=["POST"])
