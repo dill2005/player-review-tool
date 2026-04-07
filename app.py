@@ -301,37 +301,37 @@ function onAgeChange(){
 }
 
 function buildCorners(){
-  const wrap=document.getElementById("corners");
+  var wrap=document.getElementById("corners");
   wrap.innerHTML="";
-  const foundation = isFoundationAge();
-  CORNERS.forEach(c=>{
-    const div=document.createElement("div");
-    div.className="card";div.style.marginBottom="16px";
-    const rows = c.items.map((item,i)=>{
+  var foundation = isFoundationAge();
+  CORNERS.forEach(function(c){
+    var rows="";
+    c.items.forEach(function(item,i){
       if(foundation){
-        return `<div class="rating-row">
-          <span class="rating-label">${item}</span>
-          <div class="foundation-btns">
-            <button class="fbtn dev" onclick="rateF('${c.key}',${i},'D')" id="fb_${c.key}_${i}_D">Developing</button>
-            <button class="fbtn sec" onclick="rateF('${c.key}',${i},'S')" id="fb_${c.key}_${i}_S">Secure</button>
-            <button class="fbtn exc" onclick="rateF('${c.key}',${i},'E')" id="fb_${c.key}_${i}_E">Excelling</button>
-          </div>
-        </div>`;
+        rows+='<div class="rating-row">';
+        rows+='<span class="rating-label">'+item+'</span>';
+        rows+='<div class="foundation-btns">';
+        rows+='<button class="fbtn dev" onclick="rateF(''+c.key+'','+i+','D')" id="fb_'+c.key+'_'+i+'_D">Developing</button>';
+        rows+='<button class="fbtn sec" onclick="rateF(''+c.key+'','+i+','S')" id="fb_'+c.key+'_'+i+'_S">Secure</button>';
+        rows+='<button class="fbtn exc" onclick="rateF(''+c.key+'','+i+','E')" id="fb_'+c.key+'_'+i+'_E">Excelling</button>';
+        rows+='</div></div>';
       } else {
-        return `<div class="rating-row">
-          <span class="rating-label">${item}</span>
-          <div class="stars" id="stars_${c.key}_${i}">
-            ${[1,2,3,4,5].map(n=>`<div class="star" onclick="rate('${c.key}',${i},${n})" onmouseenter="hov('${c.key}',${i},${n},true)" onmouseleave="hov('${c.key}',${i},${n},false)">${n}</div>`).join("")}
-          </div>
-        </div>`;
+        rows+='<div class="rating-row">';
+        rows+='<span class="rating-label">'+item+'</span>';
+        rows+='<div class="stars" id="stars_'+c.key+'_'+i+'">';
+        [1,2,3,4,5].forEach(function(n){
+          rows+='<div class="star" onclick="rate(''+c.key+'','+i+','+n+')" onmouseenter="hov(''+c.key+'','+i+','+n+',true)" onmouseleave="hov(''+c.key+'','+i+','+n+',false)">'+n+'</div>';
+        });
+        rows+='</div></div>';
       }
-    }).join("");
-
-    div.innerHTML=`
-      <div class="corner-header" style="background:${c.bg};border-bottom:2px solid ${c.color}25;border-radius:10px 10px 0 0">
-        <span class="corner-title">${c.label}</span>
-      </div>
-      <div class="card-body">${rows}</div>`;
+    });
+    var html='<div class="corner-header" style="background:'+c.bg+';border-bottom:2px solid '+c.color+'25;border-radius:10px 10px 0 0">';
+    html+='<span class="corner-title">'+c.label+'</span></div>';
+    html+='<div class="card-body">'+rows+'</div>';
+    var div=document.createElement("div");
+    div.className="card";
+    div.style.marginBottom="16px";
+    div.innerHTML=html;
     wrap.appendChild(div);
   });
 }
