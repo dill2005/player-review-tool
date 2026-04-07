@@ -465,7 +465,7 @@ function goBack(){
   window.scrollTo(0,0);
 }
 
-buildCorners();
+document.addEventListener("DOMContentLoaded", function(){ buildCorners(); });
 </script>
 </body>
 </html>"""
