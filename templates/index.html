@@ -1,1 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FCYFC Player Review Tool</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f9f7f2;min-height:100vh;color:#111}
+header{background:#1a1a1a;padding:14px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;border-bottom:3px solid #F5A800}
+header img{width:48px;height:48px;border-radius:50%;object-fit:cover}
+header h1{color:white;font-size:17px;font-weight:800}
+header p{color:#F5A800;font-size:10px;letter-spacing:1.5px;margin-top:2px;text-transform:uppercase}
+.wrap{max-width:700px;margin:0 auto;padding:20px 14px}
+.card{background:white;border-radius:10px;border:1px solid #e8e0d0;box-shadow:0 1px 5px rgba(0,0,0,.06);margin-bottom:16px}
+.card-head{padding:13px 18px;border-bottom:1px solid #f0ebe0;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#1a1a1a}
+.card-body{padding:14px 18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#666;margin-bottom:5px}
+input,select,textarea{width:100%;padding:9px 11px;border:1.5px solid #ddd;border-radius:6px;font-size:14px;color:#111;background:#fafaf8;font-family:inherit}
+textarea{resize:vertical;line-height:1.6}
+.corner-header{display:flex;align-items:center;padding:13px 18px;border-radius:10px 10px 0 0}
+.corner-title{font-weight:800;font-size:15px;color:#111;flex:1}
+.rating-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f5f0e8;gap:10px}
+.rating-row:last-child{border-bottom:none}
+.rating-label{font-size:13px;color:#222;flex:1}
+.stars{display:flex;gap:5px;flex-shrink:0}
+.star{width:32px;height:32px;border:2px solid #ddd;border-radius:6px;background:white;color:#aaa;font-weight:700;font-size:13px;cursor:pointer;transition:all .1s;display:flex;align-items:center;justify-content:center}
+.foundation-btns{display:flex;gap:6px;flex-shrink:0}
+.fbtn{padding:6px 11px;border:2px solid #ddd;border-radius:20px;background:white;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;color:#666}
+.fbtn.dev.active{background:#1565C0;border-color:#1565C0;color:white}
+.fbtn.sec.active{background:#F9A825;border-color:#F9A825;color:#1a1a1a}
+.fbtn.exc.active{background:#2E7D32;border-color:#2E7D32;color:white}
+.legend{background:white;border-radius:8px;border:1px solid #e8e0d0;padding:10px 18px;margin-bottom:16px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;font-size:12px;color:#555}
+.legend strong{color:#111}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.btn{width:100%;padding:16px;border:none;border-radius:9px;font-size:16px;font-weight:800;cursor:pointer;transition:all .2s;margin-bottom:8px}
+.btn-gold{background:#F5A800;color:#1a1a1a}
+.btn-gold:hover{background:#FFC93C}
+.btn-gold:disabled{background:#ccc;cursor:not-allowed;color:#888}
+.btn-green{background:#1e7a35;color:white}
+.btn-green:hover{background:#2d8a47}
+.btn-outline{background:white;color:#555;border:1.5px solid #ccc;width:100%;padding:12px;border-radius:9px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:8px}
+.status{margin-top:12px;padding:12px 16px;border-radius:8px;font-size:14px;display:none;text-align:center}
+.status.loading{background:#fff8e6;color:#9a6a00;display:block;border:1px solid #F5A800}
+.status.error{background:#fde8e8;color:#b52200;display:block}
+.status.success{background:#e8f5ec;color:#1e7a35;display:block}
+#editScreen{display:none}
+.edit-section{background:white;border-radius:10px;border:1px solid #e8e0d0;margin-bottom:16px;overflow:hidden}
+.edit-section-header{padding:12px 18px;font-weight:800;font-size:13px;color:white}
+.edit-section-body{padding:14px 18px}
+.edit-field{margin-bottom:14px}
+.edit-field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#666;margin-bottom:5px}
+.edit-field textarea{width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:6px;font-size:14px;color:#111;background:#fafaf8;resize:vertical;line-height:1.6;font-family:inherit;min-height:80px}
+.edit-field textarea:focus{outline:none;border-color:#F5A800}
+.edit-banner{background:#fff8e6;border:1px solid #F5A800;border-radius:8px;padding:14px 18px;margin-bottom:16px;font-size:14px;color:#7a5a00;line-height:1.6}
+</style>
+</head>
+<body>
+<header>
+  <img src="/static/logo.png" alt="FCYFC">
+  <div>
+    <h1>Falmouth Community Youth FC</h1>
+    <p>Player Review Tool - FA Four Corner Model</p>
+  </div>
+</header>
+<div class="wrap">
 
+<div id="formScreen">
+  <div class="card">
+    <div class="card-head">Player Details</div>
+    <div class="card-body">
+      <div class="grid2">
+        <div><label>Player Name</label><input id="name" placeholder="e.g. Declan Rice"></div>
+        <div><label>Position</label><input id="position" placeholder="e.g. Midfielder"></div>
+        <div><label>Coach</label><input id="coach" placeholder="e.g. Arteta"></div>
+        <div><label>Team</label><input id="team" placeholder="e.g. U12 Ravens"></div>
+      </div>
+      <div class="grid2" style="margin-top:12px">
+        <div>
+          <label>Age Group</label>
+          <select id="agegroup" onchange="onAgeChange()">
+            <option>U7</option><option>U8</option><option>U9</option>
+            <option>U10</option><option>U11</option>
+            <option selected>U12</option>
+            <option>U13</option><option>U14</option><option>U15</option><option>U16</option>
+          </select>
+        </div>
+        <div>
+          <label>Review Period</label>
+          <select id="season">
+            <option>Mid Season Review</option>
+            <option>End of Season Review</option>
+            <option>Pre-Season Review</option>
+            <option>Quarterly Review</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend" id="legend-standard">
+    <strong>Grade:</strong>
+    <span><strong>1</strong> Needs Support</span>
+    <span><strong>2</strong> Developing</span>
+    <span><strong>3</strong> Good</span>
+    <span><strong>4</strong> Very Good</span>
+    <span><strong>5</strong> Excellent</span>
+  </div>
+  <div class="legend" id="legend-foundation" style="display:none">
+    <strong>Grade:</strong>
+    <span><span class="dot" style="background:#1565C0"></span>Developing</span>
+    <span><span class="dot" style="background:#F9A825"></span>Secure</span>
+    <span><span class="dot" style="background:#2E7D32"></span>Excelling</span>
+  </div>
+
+  <div id="corners"></div>
+
+  <div class="card">
+    <div class="card-head">Coach Notes <span style="color:#aaa;font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></div>
+    <div class="card-body">
+      <div style="margin-bottom:12px">
+        <label>Overall Comment</label>
+        <textarea id="note_comment" rows="2" placeholder="e.g. A really positive season so far..."></textarea>
+      </div>
+      <div class="grid2">
+        <div><label>Key Strengths</label><textarea id="note_strengths" rows="2" placeholder="e.g. Brilliant attitude and effort..."></textarea></div>
+        <div><label>Development Focus</label><textarea id="note_develop" rows="2" placeholder="e.g. Continue working on first touch..."></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-gold" id="generateBtn" onclick="generateReport()">Generate Report</button>
+  <div class="status" id="status"></div>
+</div>
+
+<div id="editScreen">
+  <div class="edit-banner">Review and edit the text below before downloading the PDF.</div>
+  <div class="edit-section">
+    <div class="edit-section-header" style="background:#1e7a35">Technical / Tactical</div>
+    <div class="edit-section-body">
+      <div class="edit-field"><label>Strengths</label><textarea id="e_tech_s" rows="4"></textarea></div>
+      <div class="edit-field"><label>Areas to Develop</label><textarea id="e_tech_d" rows="3"></textarea></div>
+    </div>
+  </div>
+  <div class="edit-section">
+    <div class="edit-section-header" style="background:#9a6a00">Physical</div>
+    <div class="edit-section-body">
+      <div class="edit-field"><label>Strengths</label><textarea id="e_phys_s" rows="4"></textarea></div>
+      <div class="edit-field"><label>Areas to Develop</label><textarea id="e_phys_d" rows="3"></textarea></div>
+    </div>
+  </div>
+  <div class="edit-section">
+    <div class="edit-section-header" style="background:#2255cc">Psychological</div>
+    <div class="edit-section-body">
+      <div class="edit-field"><label>Strengths</label><textarea id="e_psych_s" rows="4"></textarea></div>
+      <div class="edit-field"><label>Areas to Develop</label><textarea id="e_psych_d" rows="3"></textarea></div>
+    </div>
+  </div>
+  <div class="edit-section">
+    <div class="edit-section-header" style="background:#b52200">Social</div>
+    <div class="edit-section-body">
+      <div class="edit-field"><label>Strengths</label><textarea id="e_soc_s" rows="4"></textarea></div>
+      <div class="edit-field"><label>Areas to Develop</label><textarea id="e_soc_d" rows="3"></textarea></div>
+    </div>
+  </div>
+  <div class="edit-section">
+    <div class="edit-section-header" style="background:#1a1a1a">Overall Coach Comment</div>
+    <div class="edit-section-body">
+      <div class="edit-field"><textarea id="e_overall" rows="5"></textarea></div>
+    </div>
+  </div>
+  <button class="btn btn-green" onclick="downloadPDF()">Download PDF</button>
+  <button class="btn-outline" onclick="goBack()">Back to Form</button>
+  <div class="status" id="status2"></div>
+</div>
+
+</div>
+
+<script>
+var FOUNDATION_AGES = ["U7","U8","U9","U10","U11"];
+var CORNERS = [
+  {key:"technical", label:"Technical / Tactical", color:"#1e7a35", bg:"#f0f9f3",
+   items:["First touch and ball control","Dribbling and ball manipulation","Passing accuracy and weight","Scanning before receiving","Decision-making in possession","Retaining possession under pressure","Defensive positioning and body shape","Understanding transitions","Position-specific responsibilities"]},
+  {key:"physical", label:"Physical", color:"#9a6a00", bg:"#fdf8ec",
+   items:["Agility and coordination","Acceleration and speed","Strength in duels","Balance and stability","Endurance and work rate","Movement efficiency","Position-specific physical demands"]},
+  {key:"psychological", label:"Psychological", color:"#2255cc", bg:"#f0f4ff",
+   items:["Focus and concentration","Resilience after mistakes","Confidence in possession","Willingness to take responsibility","Game understanding and anticipation","Leadership behaviours","Motivation and attitude","Consistency across training and matches"]},
+  {key:"social", label:"Social", color:"#b52200", bg:"#fff4f1",
+   items:["Communication with teammates","Calling for the ball with purpose","Supporting and organising others","Respect for coaches, referees, teammates","Teamwork and cooperation","Contribution to team environment","Ability to work in groups"]}
+];
+
+var ratings = {};
+CORNERS.forEach(function(c) {
+  ratings[c.key] = {};
+  c.items.forEach(function(item, i) { ratings[c.key][i] = null; });
+});
+var currentPayload = null;
+
+function isFoundationAge() {
+  return FOUNDATION_AGES.indexOf(document.getElementById("agegroup").value) !== -1;
+}
+
+function onAgeChange() {
+  var foundation = isFoundationAge();
+  document.getElementById("legend-standard").style.display = foundation ? "none" : "flex";
+  document.getElementById("legend-foundation").style.display = foundation ? "flex" : "none";
+  CORNERS.forEach(function(c) {
+    c.items.forEach(function(item, i) { ratings[c.key][i] = null; });
+  });
+  buildCorners();
+}
+
+function buildCorners() {
+  var wrap = document.getElementById("corners");
+  wrap.innerHTML = "";
+  var foundation = isFoundationAge();
+
+  CORNERS.forEach(function(c) {
+    var card = document.createElement("div");
+    card.className = "card";
+    card.style.marginBottom = "16px";
+
+    var header = document.createElement("div");
+    header.className = "corner-header";
+    header.style.background = c.bg;
+    header.style.borderBottom = "2px solid " + c.color + "40";
+    header.style.borderRadius = "10px 10px 0 0";
+    var title = document.createElement("span");
+    title.className = "corner-title";
+    title.textContent = c.label;
+    header.appendChild(title);
+    card.appendChild(header);
+
+    var body = document.createElement("div");
+    body.className = "card-body";
+
+    c.items.forEach(function(item, i) {
+      var row = document.createElement("div");
+      row.className = "rating-row";
+
+      var lbl = document.createElement("span");
+      lbl.className = "rating-label";
+      lbl.textContent = item;
+      row.appendChild(lbl);
+
+      if (foundation) {
+        var btns = document.createElement("div");
+        btns.className = "foundation-btns";
+        var defs = [["D","Developing","dev"],["S","Secure","sec"],["E","Excelling","exc"]];
+        defs.forEach(function(def) {
+          var btn = document.createElement("button");
+          btn.className = "fbtn " + def[2];
+          btn.textContent = def[1];
+          btn.id = "fb_" + c.key + "_" + i + "_" + def[0];
+          btn.onclick = (function(key, idx, val) {
+            return function() { rateF(key, idx, val); };
+          })(c.key, i, def[0]);
+          btns.appendChild(btn);
+        });
+        row.appendChild(btns);
+      } else {
+        var stars = document.createElement("div");
+        stars.className = "stars";
+        stars.id = "stars_" + c.key + "_" + i;
+        for (var n = 1; n <= 5; n++) {
+          var star = document.createElement("div");
+          star.className = "star";
+          star.textContent = n;
+          star.onclick = (function(key, idx, val) {
+            return function() { rate(key, idx, val); };
+          })(c.key, i, n);
+          star.onmouseenter = (function(key, idx, val) {
+            return function() { hov(key, idx, val, true); };
+          })(c.key, i, n);
+          star.onmouseleave = (function(key, idx, val) {
+            return function() { hov(key, idx, val, false); };
+          })(c.key, i, n);
+          stars.appendChild(star);
+        }
+        row.appendChild(stars);
+      }
+      body.appendChild(row);
+    });
+    card.appendChild(body);
+    wrap.appendChild(card);
+  });
+}
+
+function rateF(key, idx, val) {
+  ratings[key][idx] = (ratings[key][idx] === val) ? null : val;
+  var defs = ["D","S","E"];
+  var classes = ["dev","sec","exc"];
+  defs.forEach(function(v, vi) {
+    var btn = document.getElementById("fb_" + key + "_" + idx + "_" + v);
+    if (btn) {
+      btn.className = "fbtn " + classes[vi] + (ratings[key][idx] === v ? " active" : "");
+    }
+  });
+}
+
+function rate(key, idx, val) {
+  ratings[key][idx] = (ratings[key][idx] === val) ? null : val;
+  renderStars(key, idx, ratings[key][idx]);
+}
+
+function hov(key, idx, val, on) {
+  var cur = ratings[key][idx] || 0;
+  var c = null;
+  CORNERS.forEach(function(x) { if (x.key === key) c = x; });
+  var stars = document.querySelectorAll("#stars_" + key + "_" + idx + " .star");
+  stars.forEach(function(s, i) {
+    var active = i < (on ? val : cur);
+    s.style.borderColor = active ? c.color : "#ddd";
+    s.style.background = active ? c.color : "white";
+    s.style.color = active ? "white" : "#aaa";
+  });
+}
+
+function renderStars(key, idx, val) {
+  var c = null;
+  CORNERS.forEach(function(x) { if (x.key === key) c = x; });
+  var stars = document.querySelectorAll("#stars_" + key + "_" + idx + " .star");
+  stars.forEach(function(s, i) {
+    var active = val && i < val;
+    s.style.borderColor = active ? c.color : "#ddd";
+    s.style.background = active ? c.color : "white";
+    s.style.color = active ? "white" : "#aaa";
+  });
+}
+
+function showStatus(id, msg, type) {
+  var el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = "status " + type;
+}
+
+function buildRatingsText() {
+  var GRADES = {1:"Needs Support",2:"Developing",3:"Good",4:"Very Good",5:"Excellent"};
+  var FLABELS = {D:"Developing",S:"Secure",E:"Excelling"};
+  var foundation = isFoundationAge();
+  var txt = "";
+  CORNERS.forEach(function(c) {
+    txt += "\n" + c.label.toUpperCase() + ":\n";
+    c.items.forEach(function(item, i) {
+      var v = ratings[c.key][i];
+      if (foundation) {
+        txt += "  * " + item + ": " + (v ? FLABELS[v] : "Not rated") + "\n";
+      } else {
+        txt += "  * " + item + ": " + (v ? v + " - " + GRADES[v] : "Not rated") + "\n";
+      }
+    });
+  });
+  return txt;
+}
+
+async function generateReport() {
+  var name = document.getElementById("name").value.trim();
+  if (!name) { alert("Please enter the player's name."); return; }
+  var btn = document.getElementById("generateBtn");
+  btn.disabled = true;
+  btn.textContent = "Generating...";
+  showStatus("status", "Generating report - please wait...", "loading");
+
+  currentPayload = {
+    name: name,
+    position: document.getElementById("position").value.trim(),
+    coach: document.getElementById("coach").value.trim(),
+    team: document.getElementById("team").value.trim(),
+    season: document.getElementById("season").value,
+    agegroup: document.getElementById("agegroup").value,
+    isFoundation: isFoundationAge(),
+    ratingsText: buildRatingsText(),
+    noteComment: document.getElementById("note_comment").value.trim(),
+    noteStrength: document.getElementById("note_strengths").value.trim(),
+    noteDevelop: document.getElementById("note_develop").value.trim()
+  };
+
+  try {
+    var res = await fetch("/generate_text", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(currentPayload)
+    });
+    if (!res.ok) {
+      var err = await res.json();
+      throw new Error(err.error || "Server error");
+    }
+    var ai = await res.json();
+    document.getElementById("e_tech_s").value = ai.technical_strengths || "";
+    document.getElementById("e_tech_d").value = ai.technical_develop || "";
+    document.getElementById("e_phys_s").value = ai.physical_strengths || "";
+    document.getElementById("e_phys_d").value = ai.physical_develop || "";
+    document.getElementById("e_psych_s").value = ai.psychological_strengths || "";
+    document.getElementById("e_psych_d").value = ai.psychological_develop || "";
+    document.getElementById("e_soc_s").value = ai.social_strengths || "";
+    document.getElementById("e_soc_d").value = ai.social_develop || "";
+    document.getElementById("e_overall").value = ai.overall || "";
+    document.getElementById("formScreen").style.display = "none";
+    document.getElementById("editScreen").style.display = "block";
+    window.scrollTo(0, 0);
+  } catch(e) {
+    showStatus("status", "Error: " + e.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Generate Report";
+  }
+}
+
+async function downloadPDF() {
+  showStatus("status2", "Generating your PDF...", "loading");
+  var btn = event.target;
+  btn.disabled = true;
+  var payload = Object.assign({}, currentPayload, {
+    technical_strengths: document.getElementById("e_tech_s").value,
+    technical_develop: document.getElementById("e_tech_d").value,
+    physical_strengths: document.getElementById("e_phys_s").value,
+    physical_develop: document.getElementById("e_phys_d").value,
+    psychological_strengths: document.getElementById("e_psych_s").value,
+    psychological_develop: document.getElementById("e_psych_d").value,
+    social_strengths: document.getElementById("e_soc_s").value,
+    social_develop: document.getElementById("e_soc_d").value,
+    overall: document.getElementById("e_overall").value
+  });
+  try {
+    var res = await fetch("/generate_pdf", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      var err = await res.json();
+      throw new Error(err.error || "Server error");
+    }
+    var blob = await res.blob();
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = currentPayload.name.replace(/ /g, "_") + "_Player_Review.pdf";
+    a.click();
+    showStatus("status2", "PDF downloaded successfully!", "success");
+  } catch(e) {
+    showStatus("status2", "Error: " + e.message, "error");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function goBack() {
+  document.getElementById("editScreen").style.display = "none";
+  document.getElementById("formScreen").style.display = "block";
+  window.scrollTo(0, 0);
+}
+
+window.onload = function() { onAgeChange(); };
+</script>
+</body>
+</html>
