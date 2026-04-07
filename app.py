@@ -141,8 +141,12 @@ def build_pdf(data, output_path):
             Paragraph("Excelling", sty("ge", fontName="Helvetica-Bold", fontSize=8, textColor=EXC_COL, leading=11)),
         ]], colWidths=[30*mm, 50*mm, 50*mm, 56*mm])
     else:
-        gk_text = "  ".join(["%d = %s" % (k,v) for k,v in GRADE_LABELS.items()])
-        gk = Table([[Paragraph("GRADE KEY:  " + gk_text, styles["gk"])]], colWidths=[W])
+        gk = Table([[
+            Paragraph("GRADE KEY:", styles["gk"]),
+            Paragraph("1-2  Developing", sty("gd2", fontName="Helvetica-Bold", fontSize=8, textColor=DEV_COL, leading=11)),
+            Paragraph("3-4  Secure", sty("gs2", fontName="Helvetica-Bold", fontSize=8, textColor=SEC_COL, leading=11)),
+            Paragraph("5  Excelling", sty("ge2", fontName="Helvetica-Bold", fontSize=8, textColor=EXC_COL, leading=11)),
+        ]], colWidths=[30*mm, 55*mm, 50*mm, 51*mm])
     gk.setStyle(TableStyle([
         ("BACKGROUND",(0,0),(-1,-1),OFF_WHITE),("BOX",(0,0),(-1,-1),.5,RULE_GREY),
         ("TOPPADDING",(0,0),(-1,-1),5),("BOTTOMPADDING",(0,0),(-1,-1),5),
@@ -192,17 +196,23 @@ def build_pdf(data, output_path):
                 rows.append([Paragraph("- %s" % item, styles["ri"]), badge])
             else:
                 score_int = score if isinstance(score,int) else 0
-                label = GRADE_LABELS.get(score_int,"")
-                dots_on  = '<font color="%s">%s</font>' % (col_hex, "●" * score_int)
-                dots_off = '<font color="#cccccc">%s</font>' % ("●" * (5-score_int))
+                if score_int <= 2:
+                    descriptor = "Developing"
+                    dcol = DEV_COL
+                elif score_int <= 4:
+                    descriptor = "Secure"
+                    dcol = SEC_COL
+                else:
+                    descriptor = "Excelling"
+                    dcol = EXC_COL
+                badge = Paragraph("<b>%s</b>" % descriptor,
+                    sty("sc", fontName="Helvetica-Bold", fontSize=9, textColor=dcol, leading=13, alignment=TA_RIGHT))
                 rows.append([
                     Paragraph("- %s" % item, styles["ri"]),
-                    Paragraph(dots_on + dots_off, sty("d", fontName="Helvetica", fontSize=10, leading=13)),
-                    Paragraph("<b>%d</b> <font color='#888'>%s</font>" % (score_int, label),
-                        sty("sc", fontName="Helvetica", fontSize=8.5, leading=13, alignment=TA_RIGHT)),
+                    badge,
                 ])
 
-        col_widths = [120*mm, 60*mm] if foundation else [90*mm, 40*mm, 30*mm]
+        col_widths = [120*mm, 60*mm] if foundation else [130*mm, 50*mm]
         rt = Table(rows, colWidths=col_widths)
         rt.setStyle(TableStyle([
             ("BACKGROUND",(0,0),(-1,-1),bg),
@@ -292,7 +302,22 @@ def get_ai_text(body):
     if foundation:
         rating_system = "Ratings use: Developing / Secure / Excelling. Reference these descriptors in your text rather than numbers."
     else:
-        rating_system = "Ratings use 1-5. Praise scores of 4-5. Encourage development on scores of 1-2."
+        rating_system = (
+            "Ratings use 1-5 where: "
+            "1 = Developing (just starting to build this skill), "
+            "2 = Developing (making good progress but still building), "
+            "3 = Secure (solidly established, consistently doing this well), "
+            "4 = Secure (strongly established, close to excelling), "
+            "5 = Excelling (outstanding, a real strength). "
+            "IMPORTANT: Never mention numbers in your written text. "
+            "Use the descriptors Developing, Secure or Excelling instead. "
+            "But use the precise number to calibrate your language - "
+            "a 1 needs gentle encouragement to keep building, "
+            "a 2 deserves recognition of good progress being made, "
+            "a 3 gets solid praise for being well established, "
+            "a 4 gets strong praise and a nudge towards the next level, "
+            "a 5 gets celebrated as a real standout strength."
+        )
 
     parts = [
         "Write a FA Four Corner Model player review for Falmouth Community Youth Football Club.",
