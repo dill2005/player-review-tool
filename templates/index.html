@@ -322,18 +322,12 @@ function showStatus(id, msg, type) {
 
 function buildRatingsText() {
   var GRADES = {1:"Needs Support",2:"Developing",3:"Good",4:"Very Good",5:"Excellent"};
-  var FLABELS = {D:"Developing",S:"Secure",E:"Excelling"};
-  var foundation = isFoundationAge();
   var txt = "";
   CORNERS.forEach(function(c) {
     txt += "\n" + c.label.toUpperCase() + ":\n";
     c.items.forEach(function(item, i) {
       var v = ratings[c.key][i];
-      if (foundation) {
-        txt += "  * " + item + ": " + (v ? FLABELS[v] : "Not rated") + "\n";
-      } else {
-        txt += "  * " + item + ": " + (v ? v + " - " + GRADES[v] : "Not rated") + "\n";
-      }
+      txt += "  * " + item + ": " + (v ? v + " - " + GRADES[v] : "Not rated") + "\n";
     });
   });
   return txt;
